@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Three</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/PageThreeStyle.css') }}">
+</head>
+<body>
+<div class="pageThree">
+    <div class="headerBox">
+        <div class="logoBox">
+
+        </div>
+        <div class="startBox">
+            <div class="parser">PB</div>
+            <div class="parser">PC</div>
+            <div class="parser">PS</div>
+            <button class="startStop"onclick="window.location.href='/restart_packager_and_parser'">
+                <h4 class="ss">Restart</h4>
+            </button>
+            <button class="startStop"onclick="window.location.href='/start_or_stop_parser'">
+                <h4 class="ss">Start / Stop Parser</h4>
+            </button>
+            <button class="startStop"onclick="window.location.href='/start_or_stop_packager'">
+                <h4 class="ss">Start / Stop Packager</h4>
+            </button>
+        </div>
+        <div class="categoriesBox">
+            <div class="categoriesDiv" onclick="window.location.href = '/'" > 
+                <h4 class="categories" >Статистика</h4> 
+            </div>
+            <div class="categoriesDiv" onclick="window.location.href = '/folders_and_channels'" > 
+                <h4 class="categories" >Папки и Каналы</h4> 
+            </div>
+            <div class="categoriesDiv" onclick="window.location.href = '/settings'" style="background-color: #80808fff;"> 
+                <h4 class="categories" style="color: #fff;">Настройки</h4> 
+            </div>
+        </div>
+        <div class="procentsBox">
+            {% if data.parsers_info.parser.status == 'stopped' %}
+            <h4 class="statistics">Parser Stopped</h4> 
+            {% else %}
+            <h4 class="statistics">Parser RUN - {{ data.parsers_info.parser.last_changed }}</h4> 
+            {% endif %}
+
+            {% if data.parsers_info.packager.status == 'stopped' %}
+            <h4 class="statistics">Packager Packager</h4> 
+            {% else %}
+            <h4 class="statistics">Packager RUN - {{ data.parsers_info.packager.last_changed }}</h4> 
+            {% endif %}
+            <h4 class="statistics">CP - {{ data.get_system_usage.memory_usage_percent }}%</h4> 
+            <h4 class="statistics">RAM - {{ data.get_system_usage.cpu_usage_percent }}%</h4> 
+        </div>
+    </div>
+    <div class="mainBox">
+        <div class="SettingsDiv">
+            <div class="dictionary">
+                <h3>Словарь 100</h3>
+                <p>Лонг - 10     Шорт - 10</p>
+                <p>leverage - 10</p>
+                <p>margin - 10</p>
+                <p>RVH - 10</p>
+                <p>TVH - 10</p>
+                <p>LVH - 10</p>
+                <p>TP - 10</p>
+                <p>SL - 10</p>
+            </div>
+            <div class="settings">
+                <h3>Настройки Отправки</h3>
+                <div class="settingsDiv">
+                    <h4>TEST</h4>
+                    <h4>id:46574564352453574</h4>
+                    <h4>Ориг: Вкл</h4>
+                </div>
+                <div class="settingsDiv">
+                    <h4>MONITOR</h4>
+                    <h4>id:46574564352453574</h4>
+                    <h4>Ориг: Выкл</h4>
+                </div>
+            </div>
+        </div>
+        <div class="startFile">
+            <h3>Файл Запуска</h3>
+        </div>
+    </div>
+</body>
+</html>

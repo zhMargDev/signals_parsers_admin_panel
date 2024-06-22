@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page One</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/PageOneStyle.css') }}">
+</head>
+<body>
+<div class="pageOne">
+    <div class="headerBox">
+        <div class="logoBox">
+
+        </div>
+        <div class="startBox">
+            <div class="parser">PB</div>
+            <div class="parser">PC</div>
+            <div class="parser">PS</div>
+            <button class="startStop"onclick="window.location.href='/restart_packager_and_parser'">
+                <h4 class="ss">Restart</h4>
+            </button>
+            <button class="startStop"onclick="window.location.href='/start_or_stop_parser'">
+                <h4 class="ss">Start / Stop Parser</h4>
+            </button>
+            <button class="startStop"onclick="window.location.href='/start_or_stop_packager'">
+                <h4 class="ss">Start / Stop Packager</h4>
+            </button>
+        </div>
+        <div class="categoriesBox">
+            <div class="categoriesDiv" onclick="window.location.href = '/'" style="background-color: #80808fff;"> 
+                <h4 class="categories" style="color: #fff;">Статистика</h4> 
+            </div>
+            <div class="categoriesDiv" onclick="window.location.href = '/folders_and_channels'" > 
+                <h4 class="categories">Папки и Каналы</h4> 
+            </div>
+            <div class="categoriesDiv" onclick="window.location.href = '/settings'"> 
+                <h4 class="categories">Настройки</h4> 
+            </div>
+        </div>
+        <div class="procentsBox">
+            {{data.get_system_usage}}
+            {% if data.parsers_info.parser.status == 'stopped' %}
+            <h4 class="statistics">Parser Stopped</h4> 
+            {% else %}
+            <h4 class="statistics">Parser RUN - {{ data.parsers_info.parser.last_changed }}</h4> 
+            {% endif %}
+
+            {% if data.parsers_info.packager.status == 'stopped' %}
+            <h4 class="statistics">Packager Packager</h4> 
+            {% else %}
+            <h4 class="statistics">Packager RUN - {{ data.parsers_info.packager.last_changed }}</h4> 
+            {% endif %}
+            <h4 class="statistics">CP - {{ data.get_system_usage.memory_usage_percent }}%</h4> 
+            <h4 class="statistics">RAM - {{ data.get_system_usage.cpu_usage_percent }}%</h4> 
+        </div>
+    </div>
+    <div class="mainBox">
+        <div class="mainDiv">
+            <div class="allChannels">
+                <div>
+                    <h4 style="text-align: start; margin-left: 10px;">Всего 300 каналов</h4>
+                    <h4 style="text-align: start; margin-left: 10px;">100 каналов в 7 папках</h4>
+                </div>
+                    <div class="allFolders">
+                        <div class="allFolder">   
+                            <h4 >Папки</h4>
+                            <h4 >ВКЛ</h4>
+                            <h4 >ТЕСТ</h4>
+                            <h4 >ВЫКЛ</h4>
+                        </div>
+                        <div class="allFolder">   
+                            <h4>TEST</h4>
+                            <h4>0</h4>
+                            <h4>1</h4>
+                            <h4>2</h4>
+                        </div>     
+                        <div class="allFolder"> 
+                            <h4>RF</h4>
+                            <h4>10</h4>
+                            <h4>2</h4>
+                            <h4>2</h4>
+                        </div>
+                        <div class="allFolder">     
+                            <h4>RP</h4>
+                            <h4>20</h4>
+                            <h4>2</h4>
+                            <h4>1</h4>
+                        </div>
+                        <div class="allFolder">
+                            <h4>RV</h4>
+                            <h4>20</h4>
+                            <h4>3</h4>
+                            <h4>1</h4>
+                        </div>
+                        <div class="allFolder">
+                            <h4>EF</h4>
+                            <h4>5</h4>
+                            <h4>0</h4>
+                            <h4>2</h4>
+                        </div>
+                        <div class="allFolder">
+                            <h4>EP</h4>
+                            <h4>15</h4>
+                            <h4>0</h4>
+                            <h4>1</h4>
+                        </div>
+                        <div class="allFolder">
+                            <h4>EV</h4>
+                            <h4>10</h4>
+                            <h4>2</h4>
+                            <h4>1</h4>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="text-align: start; margin-left: 10px;">Новых каналов - 0</h4>
+                        <h4 style="text-align: start; margin-left: 10px;">Удалённых каналов - 0</h4>
+                        <h4 style="text-align: start; margin-left: 10px;">В корзине каналов - 10</h4>
+                    </div>
+                </div>
+                <div class="infoBox">
+                    <div class="diagrams-box">
+                        <div>
+                            <h2 style="text-align: start; margin-left: 75px;" >Каналов</h2>
+                            <div class="channel-diagram">100</div>
+                        </div>
+                        <div>
+                            <h2 style="text-align: start; margin-left: 55px;">Сообщений</h2>  
+                            <div class="sms-diagram">200</div>
+                        </div>
+                    </div>
+
+                    <div class="diagram-info">
+                        <div class="info-boxes">
+                            <p>Сообщений выдано от - 60 каналов</p>
+                            <p>В тест - 20</p>
+                            <p>В монитор - 40</p>
+                            <p>Лонг - 30</p>
+                            <p>Шорт - 30</p>
+                        </div>
+                        <div class="info-boxes">
+                            <p>Каналов - 100</p>
+                            <p>Активных - 80</p>
+                            <p>Не активных - 10</p>
+                            <p>На тесте - 10</p>
+                        </div>
+                        <div class="info-boxes">
+                            <p>Обработано сообщений - 200</p>
+                            <p>Получено сигналов -  60</p>
+                            <p>Похожих - 10</p>
+                            <p>Одинаковые - 0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="period-box">
+                    <p>Выбор периода</p>
+                    <select name="period" id="">
+                        <option value="">24 ч</option>
+                        <option value="">неделя</option>
+                        <option value="">месяц</option>
+                        <option value="">год</option>
+                        <option value="">Весь период</option>
+                    </select>
+                </div>
+        </div>
+        <div class="activeBox">
+            <div class="activeFolders">
+                <div class="aFolders">
+                    <h5>Все</h5>
+                    <h5>60</h5>
+                </div>
+                <div class="aFolders">
+                    <h5>TEST</h5>
+                    <h5>20</h5>
+                </div>    
+                <div class="aFolders">
+                    <h5>RF</h5>
+                    <h5>15</h5>
+                </div>    
+                <div class="aFolders">
+                    <h5>PR</h5>
+                    <h5>17</h5>
+                </div>    
+            </div>
+            <div class="activeChannels">
+                    <div class="aachanells">
+                        <h5>Дата/время</h5>
+                        <h5>Папка</h5>
+                        <h5>ID Канала</h5>
+                        <h5>Имя Канала</h5>
+                        <h5>Кол. сиг.</h5>
+                        <h5>COIN</h5>
+                        <h5>TREND</h5>
+                    </div>
+                    <div class="aachanells">
+                        <h5>22.05.24 - 18:34</h5>
+                        <h5>TEST</h5>
+                        <h5>ID Канала</h5>
+                        <h5>Имя Канала</h5>
+                        <h5>2</h5>
+                        <h5>BTC</h5>
+                        <h5>LONG</h5>
+                    </div>
+                    <div class="aachanells">
+                        <h5>22.05.24 - 18:34</h5>
+                        <h5>TEST</h5>
+                        <h5>ID Канала</h5>
+                        <h5>Имя Канала</h5>
+                        <h5>2</h5>
+                        <h5>BTC</h5>
+                        <h5>SHORT</h5>
+                    </div>
+            </div>
+            <div class="activeSignals">
+                    <div class="one">
+                        <h5>Одинаковые</h5>
+                        <h5>2 BTC LONG</h5>
+                    </div>
+                    <div class="primere">
+                        <h5>Похожие</h5>
+                        <h5>5 BTC LONG</h5>
+                        <h5>6 LINA SHORT</h5>
+                    </div>
+            </div>
+        </div>
+        <div class="activeBox">
+            <div class="activeFolders">
+                <div class="aFolders">
+                    <h5>Все</h5>
+                    <h5>60</h5>
+                </div>
+                <div class="aFolders">
+                    <h5>TEST</h5>
+                    <h5>20</h5>
+                </div>    
+                <div class="aFolders">
+                    <h5>RF</h5>
+                    <h5>15</h5>
+                </div>    
+                <div class="aFolders">
+                    <h5>PR</h5>
+                    <h5>17</h5>
+                </div>    
+            </div>
+            <div class="activeChannels">
+                    <div class="aachanells">
+                        <h5>Дата/время</h5>
+                        <h5>Папка</h5>
+                        <h5>ID Канала</h5>
+                        <h5>Имя Канала</h5>
+                        <h5>Кол. сиг.</h5>
+                        <h5>COIN</h5>
+                        <h5>TREND</h5>
+                    </div>
+                    <div class="aachanells">
+                        <h5>22.05.24 - 18:34</h5>
+                        <h5>TEST</h5>
+                        <h5>ID Канала</h5>
+                        <h5>Имя Канала</h5>
+                        <h5>2</h5>
+                        <h5>BTC</h5>
+                        <h5>LONG</h5>
+                    </div>
+                    <div class="aachanells">
+                        <h5>22.05.24 - 18:34</h5>
+                        <h5>TEST</h5>
+                        <h5>ID Канала</h5>
+                        <h5>Имя Канала</h5>
+                        <h5>2</h5>
+                        <h5>BTC</h5>
+                        <h5>SHORT</h5>
+                    </div>
+            </div>
+            <div class="activeSignals">
+                    <div class="one">
+                        <h5>Одинаковые</h5>
+                        <h5>2 BTC LONG</h5>
+                    </div>
+                    <div class="primere">
+                        <h5>Похожие</h5>
+                        <h5>5 BTC LONG</h5>
+                        <h5>6 LINA SHORT</h5>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>    
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Two</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/PageTwoStyle.css')}}">
+</head>
+<body>
+    <div class="pageTwo">
+        <div class="headerBox">
+            <div class="logoBox">
+
+            </div>
+            <div class="startBox">
+                <div class="parser">PB</div>
+                <div class="parser">PC</div>
+                <div class="parser">PS</div>
+                <button class="startStop"onclick="window.location.href='/restart_packager_and_parser'">
+                    <h4 class="ss">Restart</h4>
+                </button>
+                <button class="startStop"onclick="window.location.href='/start_or_stop_parser'">
+                    <h4 class="ss">Start / Stop Parser</h4>
+                </button>
+                <button class="startStop"onclick="window.location.href='/start_or_stop_packager'">
+                    <h4 class="ss">Start / Stop Packager</h4>
+                </button>
+            </div>
+            <div class="categoriesBox">
+                <div class="categoriesDiv" onclick="window.location.href = '/'" > 
+                    <h4 class="categories" >Статистика</h4> 
+                </div>
+                <div class="categoriesDiv" onclick="window.location.href = '/folders_and_channels'" style="background-color: #80808fff;"> 
+                    <h4 class="categories" style="color: #fff;">Папки и Каналы</h4> 
+                </div>
+                <div class="categoriesDiv" onclick="window.location.href = '/settings'"> 
+                    <h4 class="categories">Настройки</h4> 
+                </div>
+            </div>
+            <div class="procentsBox">
+                {% if data.parsers_info.parser.status == 'stopped' %}
+                <h4 class="statistics">Parser Stopped</h4> 
+                {% else %}
+                <h4 class="statistics">Parser RUN - {{ data.parsers_info.parser.last_changed }}</h4> 
+                {% endif %}
+    
+                {% if data.parsers_info.packager.status == 'stopped' %}
+                <h4 class="statistics">Packager Packager</h4> 
+                {% else %}
+                <h4 class="statistics">Packager RUN - {{ data.parsers_info.packager.last_changed }}</h4> 
+                {% endif %}
+                <h4 class="statistics">CP - {{ data.get_system_usage.memory_usage_percent }}%</h4> 
+                <h4 class="statistics">RAM - {{ data.get_system_usage.cpu_usage_percent }}%</h4> 
+            </div>
+        </div>
+        <div class="mainBox">
+            <div class="folderStatistic">
+                <div class="folders">
+                    <div class="statistics"><h4>Дата послед. сигнала</h4></div>
+                    <div class="statistics"><h4>Папка</h4></div>
+                    <div class="statistics"><h4>ID</h4></div>
+                    <div class="statistics"><h4>Имя Канала</h4></div>
+                    <div class="statistics"><h4>Всего кол. сиг.</h4></div>
+                </div>
+                <div class="folders">
+                    <div class="statistics"><h4>2d 16h 22m</h4></div>
+                    <div class="statistics"><h4>RF</h4></div>
+                    <div class="statistics"><h4>222222222</h4></div>
+                    <div class="statistics"><h4>dsgsdgsdfg</h4></div>
+                    <div class="statistics"><h4>2</h4></div>
+                </div>
+                
+            </div>
+            <div class="adminBox">
+                <div class="adminInfo">
+                    <div class="infoLogo"></div>
+                    <div class="mainInfo">
+                        <p>Папка:RF</p>
+                        <p>Имя Канала: gsdgfs</p>
+                        <p>Админ Канала: @ghsgsgwggr </p>
+                    </div>
+                </div>
+                <div class="channelInfo">
+                    <p>Состояние Канала: Активный</p>
+                    <p>Регистрация: 3.05.2024</p>
+                    <p>Всего Сигналов: 542 Сред. за мес.: 30</p>
+                    <p>Отработано: 500  По стопу: 42</p>
+                    <p>Заполненность Сигналов - tp: 100% ; sl: 100%</p>
+                </div>
+                <div class="channelStatistic">
+                    <div class="onOff">
+                        <h4>Папки и Кол. Каналлов</h4>
+                        <h4>Состояние</h4>
+                    </div>
+                    <div class="onOff">
+                        <h4>RF - 12</h4>
+                        <h4>Вкл</h4>
+                    </div>
+                    <div class="onOff">
+                        <h4>RP - 23</h4>
+                        <h4>Вык</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

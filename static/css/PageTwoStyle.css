@@ -1,0 +1,116 @@
+.headerBox{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    border-bottom: 1px solid;
+    margin: 1%;
+}
+
+.pageTwo{
+    display: grid;
+
+}
+.parser{
+    border-radius: 50%;
+    border:10px solid rgb(1, 167, 1);
+    padding: 10px;
+    margin: 10px;
+
+}
+.startStop{
+    border-radius: 30px;
+    background: #f33333;
+    cursor: pointer;
+    margin: 22px;
+}
+.startBox{
+    max-width: 410px;
+    display: flex;
+    justify-content: end;
+    margin-left: auto;
+    
+    gap: 10px;
+
+}
+.categoriesBox{
+ 
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-content: start;
+    max-width: 410px;
+    border-left: 1px solid;
+    height: 30px;
+    margin-top: auto;
+}
+.categoriesDiv{
+    border-top: 1px solid;
+    border-right: 1px solid;
+    height: 30px;
+    width: auto;
+}
+
+.statistics{
+    margin: 10px;
+}
+.categories{
+    margin: 5px ;
+    text-align:center;
+ 
+}
+.procentsBox{
+   
+    max-width: 410px;
+    display: flex;
+    justify-content: end;
+    margin-left: auto;
+    gap: 30px;
+}
+.mainBox{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+.folderStatistic{
+    
+    border: 1px solid;
+    margin: 40px;
+    width: 600px;
+    height: 700px;
+
+}
+.folders{
+display: grid;
+grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+border-bottom: 1px solid;
+}
+h4{ margin: 3px;
+    white-space: nowrap;
+    text-align: center;
+}
+.adminBox{
+    display: grid;
+    margin: 40px;
+    width: 600px;
+    height: 700px;
+    gap: 20px;
+}
+.adminInfo{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
+p{ margin: 3px;
+    white-space: nowrap;
+    text-align: start;
+}
+.channelStatistic{
+    border: 1px solid;
+    height: 400px;
+    width: 500px;
+
+}
+.onOff{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid;
+    
+}

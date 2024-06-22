@@ -1,0 +1,170 @@
+
+.pageOne{
+    display: grid;
+
+}
+h5{
+margin: 20px;
+}
+.mainDiv{
+    display: grid;
+    grid-template-columns:  auto auto 1fr;
+    gap: 300px;
+    margin-left:20px ;
+    padding: 30px;
+}
+.aachanells{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    border: 1px solid;
+}
+.activeFolders{
+ border: 1px solid;
+
+ }
+ .activeChannels{
+    display: grid;
+ }
+.aFolders{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.activeBox{
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    margin: 60px;
+    border: 1px solid;
+}
+.channel-diagram{
+    border-radius: 50%;
+    border: 40px solid rgb(1, 167, 1);
+    padding: 55px;
+    margin: 10px;
+    width: 20px;
+}
+
+.sms-diagram{
+    border-radius: 50%;
+    border: 40px solid rgb(1, 167, 1);
+    padding: 55px;
+    margin: 10px;
+    width: 20px;
+}
+.activeSignals{
+    border: 1px solid;
+}
+.infoBox{
+    position: relative;
+}
+.info-boxes{
+    display: flex;
+    gap: 30px;
+}
+.diagrams-box{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    position: relative;
+}
+.headerBox{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    border-bottom: 1px solid;
+    margin: 1%;
+}
+p{
+    margin: 30px;
+}
+h3{ margin: 7px;
+    white-space: nowrap;
+    text-align: center;
+}
+h4{ margin: 3px;
+    white-space: nowrap;
+    text-align: center;
+}
+.categoriesBox{
+ 
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-content: start;
+    max-width: 410px;
+    border-left: 1px solid;
+    height: 30px;
+    margin-top: auto;
+}
+.categoriesDiv{
+    border-top: 1px solid;
+    border-right: 1px solid;
+    height: 30px;
+    width: auto;
+}
+.statisticsDiv{
+   
+    height: 30px;
+    width: 140px;
+}
+.statistics{
+    margin: 10px;
+}
+.categories{
+    margin: 5px ;
+    text-align:center;
+ 
+}
+.startStop{
+    border-radius: 30px;
+    background: #f33333;
+    cursor: pointer;
+    margin: 22px;
+}
+.startBox{
+    max-width: 410px;
+    display: flex;
+    justify-content: end;
+    margin-left: auto;
+    
+    gap: 10px;
+
+}
+.parser{
+    border-radius: 50%;
+    border:10px solid rgb(1, 167, 1);
+    padding: 10px;
+    margin: 10px;
+
+}
+.procentsBox{
+   
+    max-width: 410px;
+    display: flex;
+    justify-content: end;
+    margin-left: auto;
+    gap: 30px;
+}
+
+
+.statistics{
+    margin: 5px;
+    
+}
+.ss{
+    margin: 0px;
+    text-align: center;
+}
+.mainBox{
+    display: grid;
+    gap: 30px;
+    
+}
+.allFolders{
+    display: grid;
+   gap: 20px;
+border: 1px solid;
+margin: 10px;
+}
+.allFolder{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    border-bottom: 1px solid;
+}
