@@ -1,4 +1,3 @@
-import sqlite3
 import core.controller.start_and_stop as start_stop
 import core.core as core
 
@@ -14,14 +13,17 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+
 # Определяем маршрут для каждой страницы
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
     parsers_info = await core.get_parsers_info()
     get_system_usage = await core.get_system_usage()
+    get_channels_info = await core.get_channels_info()
     data = {
         "parsers_info": parsers_info,
-        "get_system_usage": get_system_usage
+        "get_system_usage": get_system_usage,
+        "get_channels_info": get_channels_info
     }
     return templates.TemplateResponse("PageOne.html", {"request": request, "data": data})
 

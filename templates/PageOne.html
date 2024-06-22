@@ -13,17 +13,27 @@
 
         </div>
         <div class="startBox">
-            <div class="parser">PB</div>
-            <div class="parser">PC</div>
-            <div class="parser">PS</div>
-            <button class="startStop"onclick="window.location.href='/restart_packager_and_parser'">
-                <h4 class="ss">Restart</h4>
-            </button>
-            <button class="startStop"onclick="window.location.href='/start_or_stop_parser'">
+            {% if data.parsers_info.parser.status == 'stopped' %}
+            <button class="startStop" onclick="window.location.href='/start_or_stop_parser'">
                 <h4 class="ss">Start / Stop Parser</h4>
             </button>
+            {% else %}
+            <button class="startStop" style="background-color: #51ce51;" onclick="window.location.href='/start_or_stop_parser'">
+                <h4 class="ss">Start / Stop Parser</h4>
+            </button>
+            {% endif %}
+            
+            {% if data.parsers_info.packager.status == 'stopped' %}
             <button class="startStop"onclick="window.location.href='/start_or_stop_packager'">
                 <h4 class="ss">Start / Stop Packager</h4>
+            </button>
+            {% else %}
+            <button class="startStop" style="background-color: #51ce51;" onclick="window.location.href='/start_or_stop_packager'">
+                <h4 class="ss">Start / Stop Packager</h4>
+            </button>
+            {% endif %}
+            <button class="startStop" style="background-color: yellow;" onclick="window.location.href='/restart_packager_and_parser'">
+                <h4 class="ss"  >Restart</h4>
             </button>
         </div>
         <div class="categoriesBox">
@@ -38,7 +48,6 @@
             </div>
         </div>
         <div class="procentsBox">
-            {{data.get_system_usage}}
             {% if data.parsers_info.parser.status == 'stopped' %}
             <h4 class="statistics">Parser Stopped</h4> 
             {% else %}
@@ -50,6 +59,7 @@
             {% else %}
             <h4 class="statistics">Packager RUN - {{ data.parsers_info.packager.last_changed }}</h4> 
             {% endif %}
+
             <h4 class="statistics">CP - {{ data.get_system_usage.memory_usage_percent }}%</h4> 
             <h4 class="statistics">RAM - {{ data.get_system_usage.cpu_usage_percent }}%</h4> 
         </div>
@@ -59,57 +69,23 @@
             <div class="allChannels">
                 <div>
                     <h4 style="text-align: start; margin-left: 10px;">Всего 300 каналов</h4>
-                    <h4 style="text-align: start; margin-left: 10px;">100 каналов в 7 папках</h4>
+                    <h4 style="text-align: start; margin-left: 10px;">{{ data.get_channels_info.global_info.channels_count }} каналов в {{ data.get_channels_info.global_info.folders_count }} папках</h4>
                 </div>
                     <div class="allFolders">
                         <div class="allFolder">   
                             <h4 >Папки</h4>
-                            <h4 >ВКЛ</h4>
-                            <h4 >ТЕСТ</h4>
-                            <h4 >ВЫКЛ</h4>
+                            <h4 style="color: blue;" >ВКЛ</h4>
+                            <h4 style="color: #ffbf00">ТЕСТ</h4>
+                            <h4 style="color: red" >ВЫКЛ</h4>
                         </div>
-                        <div class="allFolder">   
-                            <h4>TEST</h4>
-                            <h4>0</h4>
-                            <h4>1</h4>
-                            <h4>2</h4>
-                        </div>     
-                        <div class="allFolder"> 
-                            <h4>RF</h4>
-                            <h4>10</h4>
-                            <h4>2</h4>
-                            <h4>2</h4>
-                        </div>
-                        <div class="allFolder">     
-                            <h4>RP</h4>
-                            <h4>20</h4>
-                            <h4>2</h4>
-                            <h4>1</h4>
-                        </div>
-                        <div class="allFolder">
-                            <h4>RV</h4>
-                            <h4>20</h4>
-                            <h4>3</h4>
-                            <h4>1</h4>
-                        </div>
-                        <div class="allFolder">
-                            <h4>EF</h4>
-                            <h4>5</h4>
-                            <h4>0</h4>
-                            <h4>2</h4>
-                        </div>
-                        <div class="allFolder">
-                            <h4>EP</h4>
-                            <h4>15</h4>
-                            <h4>0</h4>
-                            <h4>1</h4>
-                        </div>
-                        <div class="allFolder">
-                            <h4>EV</h4>
-                            <h4>10</h4>
-                            <h4>2</h4>
-                            <h4>1</h4>
-                        </div>
+                        {% for folder in data.get_channels_info.all_info %}
+                            <div class="allFolder">   
+                                <h4>{{ folder.folder_name }}</h4>
+                                <h4>{{ folder.active }}</h4>
+                                <h4>{{ folder.test }}</h4>
+                                <h4>{{ folder.deactive }}</h4>
+                            </div>     
+                        {% endfor %}
                     </div>
                     <div>
                         <h4 style="text-align: start; margin-left: 10px;">Новых каналов - 0</h4>
@@ -138,10 +114,10 @@
                             <p>Шорт - 30</p>
                         </div>
                         <div class="info-boxes">
-                            <p>Каналов - 100</p>
-                            <p>Активных - 80</p>
-                            <p>Не активных - 10</p>
-                            <p>На тесте - 10</p>
+                            <p>Каналов - {{ data.get_channels_info.global_info.channels_count }}</p>
+                            <p>Активных - {{ data.get_channels_info.folders_channels_count.active }}</p>
+                            <p>Не активных - {{ data.get_channels_info.folders_channels_count.disable }}</p>
+                            <p>На тесте - {{ data.get_channels_info.folders_channels_count.test }}</p>
                         </div>
                         <div class="info-boxes">
                             <p>Обработано сообщений - 200</p>

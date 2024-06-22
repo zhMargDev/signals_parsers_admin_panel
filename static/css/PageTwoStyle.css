@@ -19,9 +19,10 @@
 }
 .startStop{
     border-radius: 30px;
-    background: #f33333;
+    background: #ff5656;
     cursor: pointer;
-    margin: 22px;
+    padding: 10px;
+    border: 0;
 }
 .startBox{
     max-width: 410px;
