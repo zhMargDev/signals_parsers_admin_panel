@@ -107,23 +107,23 @@
 
                     <div class="diagram-info">
                         <div class="info-boxes">
-                            <p>Сообщений выдано от - 60 каналов</p>
-                            <p>В тест - 20</p>
-                            <p>В монитор - 40</p>
-                            <p>Лонг - 30</p>
-                            <p>Шорт - 30</p>
+                            <p>Сообщений выдано от - {{ data.get_signals_by_period.channels_count }} каналов</p>
+                            <p>В тест - {{ data.get_signals_by_period.testing_signals }} </p>
+                            <p>В монитор - {{ data.get_signals_by_period.monitoring_signals }} </p>
+                            <p>Лонг - {{ data.get_signals_by_period.long_signals_count }} </p>
+                            <p>Шорт - {{ data.get_signals_by_period.short_signals_count }} </p>
                         </div>
                         <div class="info-boxes">
-                            <p>Каналов - {{ data.get_channels_info.global_info.channels_count }}</p>
-                            <p>Активных - {{ data.get_channels_info.folders_channels_count.active }}</p>
-                            <p>Не активных - {{ data.get_channels_info.folders_channels_count.disable }}</p>
-                            <p>На тесте - {{ data.get_channels_info.folders_channels_count.test }}</p>
+                            <p>Каналов - {{ data.get_signals_by_period.global_info.channels_count }}</p>
+                            <p>Активных - {{ data.get_signals_by_period.folders_channels_count.active }}</p>
+                            <p>Не активных - {{ data.get_signals_by_period.folders_channels_count.disable }}</p>
+                            <p>На тесте - {{ data.get_signals_by_period.folders_channels_count.test }}</p>
                         </div>
                         <div class="info-boxes">
-                            <p>Обработано сообщений - 200</p>
-                            <p>Получено сигналов -  60</p>
-                            <p>Похожих - 10</p>
-                            <p>Одинаковые - 0</p>
+                            <p>Получено сигналов -  {{ data.get_signals_by_period.monitoring_signals }}</p>
+                            <p>Получено тестовых сигналов -  {{ data.get_signals_by_period.testing_signals }}</p>
+                            <p>Похожих - {{ data.get_signals_by_period.similar_signals_count + data.get_signals_by_period.similar_test_signals_count }}</p>
+                            <p>Одинаковые - {{ data.get_signals_by_period.duplicate_signals_count + data.get_signals_by_period.duplicate_test_signals_count }}</p>
                         </div>
                     </div>
                 </div>
@@ -142,20 +142,14 @@
             <div class="activeFolders">
                 <div class="aFolders">
                     <h5>Все</h5>
-                    <h5>60</h5>
+                    <h5>{{ data.get_signals_info_by_period.signals_count }}</h5>
                 </div>
-                <div class="aFolders">
-                    <h5>TEST</h5>
-                    <h5>20</h5>
-                </div>    
-                <div class="aFolders">
-                    <h5>RF</h5>
-                    <h5>15</h5>
-                </div>    
-                <div class="aFolders">
-                    <h5>PR</h5>
-                    <h5>17</h5>
-                </div>    
+                {% for folder in data.get_signals_info_by_period.folders_and_signals_count %}
+                    <div class="aFolders">
+                        <h5>{{ folder.folder_name }}</h5>
+                        <h5>{{ folder.signals_count }}</h5>
+                    </div>    
+                {% endfor %}
             </div>
             <div class="activeChannels">
                     <div class="aachanells">
@@ -189,12 +183,15 @@
             <div class="activeSignals">
                     <div class="one">
                         <h5>Одинаковые</h5>
-                        <h5>2 BTC LONG</h5>
+                        {% for signal in data.get_signals_info_by_period.dublicate_signals %}
+                            <h5>{{ signal.count }} {{ signal.coin }} {{ signal.trend }}</h5>
+                        {% endfor %}
                     </div>
                     <div class="primere">
                         <h5>Похожие</h5>
-                        <h5>5 BTC LONG</h5>
-                        <h5>6 LINA SHORT</h5>
+                        {% for signal in data.get_signals_info_by_period.similar_signals %}
+                            <h5>{{ signal.count }} {{ signal.coin }} {{ signal.trend }}</h5>
+                        {% endfor %}
                     </div>
             </div>
         </div>

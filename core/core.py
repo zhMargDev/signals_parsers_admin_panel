@@ -9,3 +9,9 @@ async def get_system_usage():
 
 async def get_channels_info():
     return await channels_and_folders.get_channels_info()
+
+async def get_signals_by_preiod(period):
+    return await channels_and_folders.get_signals_by_preiod(period)
+
+async def get_signals_info_by_period(period):
+    return await channels_and_folders.get_signals_info_by_period(period)

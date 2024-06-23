@@ -1,7 +1,7 @@
 import core.controller.start_and_stop as start_stop
 import core.core as core
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Query
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -16,14 +16,18 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Определяем маршрут для каждой страницы
 @app.get("/", response_class=HTMLResponse)
-async def read_root(request: Request):
+async def read_root(request: Request, period: str = Query(None)):
     parsers_info = await core.get_parsers_info()
     get_system_usage = await core.get_system_usage()
     get_channels_info = await core.get_channels_info()
+    get_signals_by_period = await core.get_signals_by_preiod(period)
+    get_signals_info_by_period = await core.get_signals_info_by_period(period)
     data = {
         "parsers_info": parsers_info,
         "get_system_usage": get_system_usage,
-        "get_channels_info": get_channels_info
+        "get_channels_info": get_channels_info,
+        "get_signals_by_period": get_signals_by_period,
+        "get_signals_info_by_period": get_signals_info_by_period
     }
     return templates.TemplateResponse("PageOne.html", {"request": request, "data": data})
 
