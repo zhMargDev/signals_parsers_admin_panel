@@ -16,19 +16,25 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Определяем маршрут для каждой страницы
 @app.get("/", response_class=HTMLResponse)
-async def read_root(request: Request, period: str = Query(None)):
+async def read_root(request: Request, period: str = Query(None), folder_name: str = Query(None)):
     parsers_info = await core.get_parsers_info()
     get_system_usage = await core.get_system_usage()
     get_channels_info = await core.get_channels_info()
     get_signals_by_period = await core.get_signals_by_period(period)
     get_signals_info_by_period = await core.get_signals_info_by_period(period)
+    get_long_and_short_diagram = await core.get_long_and_short_diagram(get_signals_by_period['long_signals_count'], get_signals_by_period['short_signals_count'])
+    get_channels_diagram = await core.get_channels_diagram(get_channels_info['folders_channels_count']['active'], get_channels_info['folders_channels_count']['disable'], get_channels_info['folders_channels_count']['test'])
+    get_folders_channels_info = await core.get_folders_channels_info(period, folder_name)
     data = {
         "parsers_info": parsers_info,
         "get_system_usage": get_system_usage,
         "get_channels_info": get_channels_info,
         "get_signals_by_period": get_signals_by_period,
         "get_signals_info_by_period": get_signals_info_by_period,
-        "period":period
+        "period":period,
+        "get_long_and_short_diagram": get_long_and_short_diagram,
+        "get_channels_diagram": get_channels_diagram,
+        "get_folders_channels_info": get_folders_channels_info
     }
     return templates.TemplateResponse("PageOne.html", {"request": request, "data": data})
 

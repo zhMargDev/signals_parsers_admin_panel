@@ -121,7 +121,7 @@
                         </div>
                         <div>
                             <h2 style="text-align: start; margin-left: 55px;">Сообщений</h2>  
-                            <div class="sms-diagram" style="background-image: conic-gradient(red 64%, green 64%);"></div>
+                            <div class="sms-diagram" style="background-image: conic-gradient(red {{ data.get_long_and_short_diagram.long }}%, green {{ data.get_long_and_short_diagram.long }}%);"></div>
                         </div>
                     </div>
 
@@ -148,7 +148,8 @@
                     </div>
                 </div>
                 
-        </div>
+            </div>
+            {{ data.get_folders_channels_info }}
         <div class="activeBox">
             <div class="activeFolders">
                 <div class="aFolders">
@@ -156,11 +157,34 @@
                     <h5>{{ data.get_signals_info_by_period.signals_count }}</h5>
                 </div>
                 {% for folder in data.get_signals_info_by_period.folders_and_signals_count %}
-                    <div class="aFolders">
+                    <div class="aFolders" onclick="get_folder_info('{{ folder.folder_name }}')">
                         <h5>{{ folder.folder_name }}</h5>
                         <h5>{{ folder.signals_count }}</h5>
-                    </div>    
+                    </div>  
                 {% endfor %}
+                <script>
+                    function get_folder_info(folderName) {
+                        // Получаем текущий URL
+                        let currentUrl = window.location.href;
+                
+                        // Проверяем, есть ли уже параметр 'period' в текущем URL
+                        let urlParams = new URLSearchParams(currentUrl);
+                
+                        // Получаем значение параметра 'period' из текущего URL
+                        let periodParam = urlParams.get('period');
+                
+                        // Формируем новый URL в зависимости от наличия параметра 'period'
+                        let newUrl;
+                        if (periodParam) {
+                            newUrl = `${currentUrl}&folder_name=${folderName}`;
+                        } else {
+                            newUrl = `${currentUrl}?folder_name=${folderName}`;
+                        }
+                
+                        // Перенаправляем пользователя на новый URL
+                        window.location.href = newUrl;
+                    }
+                </script>
             </div>
             <div class="activeChannels">
                     <div class="aachanells">
@@ -172,24 +196,21 @@
                         <h5>COIN</h5>
                         <h5>TREND</h5>
                     </div>
-                    <div class="aachanells">
-                        <h5>22.05.24 - 18:34</h5>
-                        <h5>TEST</h5>
-                        <h5>ID Канала</h5>
-                        <h5>Имя Канала</h5>
-                        <h5>2</h5>
-                        <h5>BTC</h5>
-                        <h5>LONG</h5>
-                    </div>
-                    <div class="aachanells">
-                        <h5>22.05.24 - 18:34</h5>
-                        <h5>TEST</h5>
-                        <h5>ID Канала</h5>
-                        <h5>Имя Канала</h5>
-                        <h5>2</h5>
-                        <h5>BTC</h5>
-                        <h5>SHORT</h5>
-                    </div>
+                    {% for folder in data.get_folders_channels_info %}
+                        {% for channel in folder.channels %}
+                            {% for signal in channel.signals %}
+                                <div class="aachanells">
+                                    <h5>{{ signal.date }} - {{ signal.time }}</h5>
+                                    <h5>{{ folder.folder_name }}</h5>
+                                    <h5>{{ channel.channel_id }}</h5>
+                                    <h5>{{ channel.channel_name }}</h5>
+                                    <h5>{{ signal.count }}</h5>
+                                    <h5>{{ signal.coin }}</h5>
+                                    <h5>{{ signal.trend }}</h5>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endfor %}
             </div>
             <div class="activeSignals">
                     <div class="one">

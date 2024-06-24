@@ -41,7 +41,8 @@ margin: 20px;
     border: 0;
     padding: 55px;
     margin: 10px;
-    width: 20px;
+    width: 70px;
+    height: 70px;
 }
 
 .sms-diagram{
@@ -49,7 +50,8 @@ margin: 20px;
     border: 0;
     padding: 55px;
     margin: 10px;
-    width: 20px;
+    width: 70px;
+    height: 70px;
 }
 .activeSignals{
     border: 1px solid;

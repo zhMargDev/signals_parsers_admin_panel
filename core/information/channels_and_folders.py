@@ -330,3 +330,122 @@ async def get_signals_info_by_period(period):
     conn.close()
 
     return result
+
+async def get_folders_channels_info(period=None, folder_name=None):
+    # Определяем текущую дату и время
+    now = datetime.now()
+
+    # Устанавливаем период по умолчанию как 1 день
+    if period is None: 
+        period = '1d'
+
+    # Определяем дату начала периода
+    if period == '1d':
+        start_date = now - timedelta(days=1)
+    elif period == '1w':
+        start_date = now - timedelta(weeks=1)
+    elif period == '1m':
+        start_date = now - timedelta(days=30)  # Приблизительно 1 месяц
+    elif period == '1y':
+        start_date = now - timedelta(days=365)  # Приблизительно 1 год
+    elif period == 'all':
+        start_date = None  # Не будет фильтровать по дате
+    else:
+        raise ValueError("Unsupported period value")
+
+    # Форматируем дату начала в строку для SQL-запроса
+    if start_date:
+        start_date_str = start_date.strftime('%Y-%m-%d %H:%M:%S')
+
+    conn = sqlite3.connect('parser.db')
+    cursor = conn.cursor()
+
+    # Получаем папки и каналы
+    cursor.execute('SELECT folder_id, folder_title FROM folders')
+    folders = cursor.fetchall()
+
+    cursor.execute('SELECT channel_id, folder_id, channel_name FROM channels')
+    channels = cursor.fetchall()
+
+    # Формируем SQL-запрос в зависимости от периода для получения всех сигналов из двух таблиц
+    if start_date:
+        query = '''
+            SELECT * FROM signals 
+            WHERE datetime(date || ' ' || time) >= ?
+            UNION ALL
+            SELECT * FROM testing_signals 
+            WHERE datetime(date || ' ' || time) >= ?
+        '''
+        params = (start_date_str, start_date_str)
+    else:
+        query = '''
+            SELECT * FROM signals
+            UNION ALL
+            SELECT * FROM testing_signals
+        '''
+        params = ()
+
+    cursor.execute(query, params)
+
+    # Получаем результаты
+    signals = cursor.fetchall()
+
+    # Обрабатываем результаты
+    signals_data = {}
+    for signal in signals:
+        channel_id = signal[1]
+        signal_data = {
+            'date_time': signal[4] + ' ' + signal[5],
+            'coin': signal[6],
+            'trend': signal[7]
+        }
+
+        if channel_id not in signals_data:
+            signals_data[channel_id] = []
+
+        signals_data[channel_id].append(signal_data)
+
+    result = []
+
+    for folder in folders:
+        if folder_name and folder_name != folder[2]: continue
+        res = {
+            "folder_name": folder[2],
+            "folder_id": folder[1],
+            "channels":[]
+        }
+        for channel in channels:
+            if channel[1] == folder[1]:
+                res_channel = {
+                    "channel_id": channel[2],
+                    "channel_name": channel[3],
+                    "signals": []
+                }
+
+                for signal in signals:
+                    if signal[1] == channel[2]:
+                        signal_is_appended = False
+                        for sig in res_channel["signals"]:
+                            if sig["coin"] == signal[6] and sig["trend"] == signal[7]:
+                                sig["count"] += 1
+                                sig["date"] = signal[4]
+                                sig["time"] = signal[5]
+                                signal_is_appended = True
+                                break
+                        if not signal_is_appended:
+                            res_channel.append({
+                                "coin": signal[6],
+                                "trend": signal[7],
+                                "count": 1,
+                                "date": signal[4],
+                                "time": signal[5],
+                            })
+                        
+            res["channels"].append(res_channel)
+
+        result.append(res)
+
+    cursor.close()
+    conn.close()
+
+    return result
