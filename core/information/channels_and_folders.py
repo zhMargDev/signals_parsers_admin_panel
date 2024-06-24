@@ -270,9 +270,11 @@ async def get_signals_info_by_period(period):
                     folder["signals_count"] += 1
 
     # Удаляем папки у которых количество сигналов равен нулю
+    flag_folders_counts = []
     for folder in folders_counts:
-        if folder["signals_count"] == 0:
-            folders_counts.remove(folder)
+        if folder["signals_count"] != 0:
+            flag_folders_counts.append(folder)
+    folders_counts = flag_folders_counts
 
     # Определяем похожие кониы и тренд и общее их количество
     similar_signals = []

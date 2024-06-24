@@ -115,3 +115,90 @@ p{ margin: 3px;
     border-bottom: 1px solid;
     
 }
+
+@media screen and (max-width: 1700px){
+
+    .mainBox{
+        grid-template-columns: 1fr;
+       }
+
+
+    .procentsBox{
+        max-width: unset;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: unset;
+    }
+}
+
+@media screen and (max-width: 900px){
+  
+  
+    .headerBox{
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .categoriesBox{
+        max-width: unset;
+    }
+    .procentsBox{
+        width: 100% ;
+    }
+    .startBox{
+        width: 100%;
+        max-width: unset;
+    }
+}
+
+@media screen and (max-width: 700px){
+    .diagrams-box{
+        grid-template-columns: 1fr;
+    }
+    .diagrams-box div{
+        display: grid;
+        justify-content: center;
+    }
+    .folderStatistic{
+        width: unset;
+        margin: 5px;
+    }
+    .adminBox{
+        width: unset;
+        margin: 5px;
+    }
+    .folders{
+        overflow-x: scroll;
+        width: unset;
+    }
+    h4{
+        white-space: wrap
+    }
+    .channelStatistic{
+        width: unset;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .categoriesBox{
+        grid-template-columns: 1fr;
+        height: unset;
+    }
+    .categoriesDiv:last-child{
+        border-bottom: 1px solid;
+    }
+
+    .startBox{
+        display: grid;
+        justify-content: center;
+    }
+    .startStop{
+        width: 260px;
+        height: 40px;
+    }
+    .adminBox{
+        margin: 1px;
+    }
+    .statistics{
+        margin: 1px;
+    }
+}

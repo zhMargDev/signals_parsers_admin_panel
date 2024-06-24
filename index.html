@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Круговая диаграмма с процентным соотношением</title>
+<style>
+    .pie-chart {
+        position: relative;
+        width: 200px; /* Размер диаграммы */
+        height: 200px;
+        border-radius: 50%; /* Делаем круглую форму */
+        background-color: #f2f2f2; /* Цвет фона */
+        transform: rotate(-90deg); /* Начало секторов сверху */
+    }
+
+    .slice {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        clip: rect(0, 100px, 200px, 0); /* Клип для формирования сектора */
+        border-radius: 50%; /* Делаем круглую форму для сектора */
+    }
+
+    .slice.green {
+        transform: rotate(0deg); /* Угол поворота */
+        background-color: #4CAF50; /* Цвет первого сектора */
+    }
+
+    .slice.blue {
+        transform: rotate(120deg); /* Угол поворота */
+        background-color: #2196F3; /* Цвет второго сектора */
+    }
+
+    .slice.orange {
+        transform: rotate(240deg); /* Угол поворота */
+        background-color: #FF9800; /* Цвет третьего сектора */
+    }
+
+    .slice::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        clip: rect(0, 50%, 100%, 0);
+    }
+
+    .slice.green::before {
+        background-color: #4CAF50;
+        transform: rotate(0deg);
+    }
+
+    .slice.blue::before {
+        background-color: #2196F3;
+        transform: rotate(120deg);
+    }
+
+    .slice.orange::before {
+        background-color: #FF9800;
+        transform: rotate(240deg);
+    }
+
+    .slice::after {
+        content: attr(data-percent); /* Отображаем процент */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 18px;
+        font-weight: bold;
+        color: black;
+    }
+</style>
+</head>
+<body>
+
+<div class="pie-chart">
+    <div class="slice green" style="--percent: 30;" data-percent="30%"></div> <!-- Первый сектор -->
+    <div class="slice blue" style="--percent: 40;" data-percent="40%"></div> <!-- Второй сектор -->
+    <div class="slice orange" style="--percent: 30;" data-percent="30%"></div> <!-- Третий сектор -->
+</div>
+
+</body>
+</html>

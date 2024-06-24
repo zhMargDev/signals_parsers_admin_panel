@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page One</title>
     <link rel="stylesheet" href="{{ url_for('static', path='css/PageOneStyle.css') }}">
+    
 </head>
 <body>
 <div class="pageOne">
@@ -66,6 +67,25 @@
     </div>
     <div class="mainBox">
         <div class="mainDiv">
+            <div class="period-box">
+                <p>Выбор периода</p>
+                <select name="period" onchange="getPeriod(this)" id="">
+                    <option {% if data.period == '' %}selected{% endif %} value="">24 ч</option>
+                    <option {% if data.period == '1w' %}selected{% endif %} value="1w">неделя</option>
+                    <option {% if data.period == '1m' %}selected{% endif %} value="1m">месяц</option>
+                    <option {% if data.period == '1y' %}selected{% endif %} value="1y">год</option>
+                    <option {% if data.period == 'all' %}selected{% endif %} value="all">Весь период</option>
+                </select>
+                <script>
+                    function getPeriod(e){
+                        if(e.value !== ''){
+                            window.location.href = `/?period=${e.value}`
+                        }else{
+                            window.location.href = `/`
+                        }
+                    }
+                </script>
+            </div>
             <div class="allChannels">
                 <div>
                     <h4 style="text-align: start; margin-left: 10px;">Всего 300 каналов</h4>
@@ -97,11 +117,11 @@
                     <div class="diagrams-box">
                         <div>
                             <h2 style="text-align: start; margin-left: 75px;" >Каналов</h2>
-                            <div class="channel-diagram">100</div>
+                            <div class="channel-diagram" style="background-image: conic-gradient(yellow 64%, green 64%, green 81%, red 81%);"></div>
                         </div>
                         <div>
                             <h2 style="text-align: start; margin-left: 55px;">Сообщений</h2>  
-                            <div class="sms-diagram">200</div>
+                            <div class="sms-diagram" style="background-image: conic-gradient(red 64%, green 64%);"></div>
                         </div>
                     </div>
 
@@ -114,10 +134,10 @@
                             <p>Шорт - {{ data.get_signals_by_period.short_signals_count }} </p>
                         </div>
                         <div class="info-boxes">
-                            <p>Каналов - {{ data.get_signals_by_period.global_info.channels_count }}</p>
-                            <p>Активных - {{ data.get_signals_by_period.folders_channels_count.active }}</p>
-                            <p>Не активных - {{ data.get_signals_by_period.folders_channels_count.disable }}</p>
-                            <p>На тесте - {{ data.get_signals_by_period.folders_channels_count.test }}</p>
+                            <p>Каналов - {{ data.get_signals_by_period.channels_count }}</p>
+                            <p>Активных - {{ data.get_channels_info.folders_channels_count.active }}</p>
+                            <p>Не активных - {{ data.get_channels_info.folders_channels_count.disable }}</p>
+                            <p>На тесте - {{ data.get_channels_info.folders_channels_count.test }}</p>
                         </div>
                         <div class="info-boxes">
                             <p>Получено сигналов -  {{ data.get_signals_by_period.monitoring_signals }}</p>
@@ -127,16 +147,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="period-box">
-                    <p>Выбор периода</p>
-                    <select name="period" id="">
-                        <option value="">24 ч</option>
-                        <option value="">неделя</option>
-                        <option value="">месяц</option>
-                        <option value="">год</option>
-                        <option value="">Весь период</option>
-                    </select>
-                </div>
+                
         </div>
         <div class="activeBox">
             <div class="activeFolders">

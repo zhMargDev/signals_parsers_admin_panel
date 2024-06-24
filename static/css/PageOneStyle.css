@@ -12,6 +12,7 @@ margin: 20px;
     gap: 300px;
     margin-left:20px ;
     padding: 30px;
+    position: relative;
 }
 .aachanells{
     display: grid;
@@ -37,7 +38,7 @@ margin: 20px;
 }
 .channel-diagram{
     border-radius: 50%;
-    border: 40px solid rgb(1, 167, 1);
+    border: 0;
     padding: 55px;
     margin: 10px;
     width: 20px;
@@ -45,7 +46,7 @@ margin: 20px;
 
 .sms-diagram{
     border-radius: 50%;
-    border: 40px solid rgb(1, 167, 1);
+    border: 0;
     padding: 55px;
     margin: 10px;
     width: 20px;
@@ -164,8 +165,108 @@ h4{ margin: 3px;
 border: 1px solid;
 margin: 10px;
 }
+.period-box{
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.period-box p {
+    margin: 30px 0  !important;
+}
 .allFolder{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     border-bottom: 1px solid;
+}
+
+@media screen and (max-width: 1700px){
+    .mainDiv{
+        gap: 70px;
+    }
+}
+@media screen and (max-width: 1100px){
+    .mainDiv{
+        grid-template-columns: 1fr;
+    }
+    .procentsBox{
+        max-width: unset;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: unset;
+    }
+    .period-box{
+        position: unset;
+        display: flex;
+        flex-wrap: wrap;
+        height: 10px;
+        justify-content: center;
+    }
+    .period-box p {
+        margin: 0 30px !important;
+    }
+}
+
+@media screen and (max-width: 900px){
+    .info-boxes{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+    h5{
+        margin: 10px;
+    }
+    .aachanells{
+        overflow-x: scroll;
+    }
+    .headerBox{
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .categoriesBox{
+        max-width: unset;
+    }
+    .procentsBox{
+        width: 100% ;
+    }
+    .startBox{
+        width: 100%;
+        max-width: unset;
+    }
+    .activeBox{
+        margin: 60px 0;
+    }
+}
+
+@media screen and (max-width: 600px){
+    .diagrams-box{
+        grid-template-columns: 1fr;
+    }
+    .diagrams-box div{
+        display: grid;
+        justify-content: center;
+    }
+    .activeBox{
+        grid-template-columns: 1fr;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .categoriesBox{
+        grid-template-columns: 1fr;
+        height: unset;
+    }
+    .categoriesDiv:last-child{
+        border-bottom: 1px solid;
+    }
+    .mainDiv{
+        margin: 0;
+        padding: 30px 0;
+    }
+    .startBox{
+        display: grid;
+        justify-content: center;
+    }
+    .startStop{
+        width: 260px;
+        height: 40px;
+    }
 }
