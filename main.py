@@ -42,9 +42,13 @@ async def read_root(request: Request, period: str = Query(None), folder_name: st
 async def read_page_two(request: Request):
     parsers_info = await core.get_parsers_info()
     get_system_usage = await core.get_system_usage()
+    get_signals_info = await core.get_signals_info()
+    get_folder_status_and_channels_count = await core.get_folder_status_and_channels_count()
     data = {
         "parsers_info": parsers_info,
-        "get_system_usage": get_system_usage
+        "get_system_usage": get_system_usage,
+        "get_signals_info": get_signals_info,
+        "get_folder_status_and_channels_count": get_folder_status_and_channels_count
     }
     return templates.TemplateResponse("PageTwo.html", {"request": request, "data": data})
 

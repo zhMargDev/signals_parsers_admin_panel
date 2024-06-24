@@ -72,13 +72,22 @@
                     <div class="statistics"><h4>Имя Канала</h4></div>
                     <div class="statistics"><h4>Всего кол. сиг.</h4></div>
                 </div>
-                <div class="folders">
-                    <div class="statistics"><h4>2d 16h 22m</h4></div>
-                    <div class="statistics"><h4>RF</h4></div>
-                    <div class="statistics"><h4>222222222</h4></div>
-                    <div class="statistics"><h4>dsgsdgsdfg</h4></div>
-                    <div class="statistics"><h4>2</h4></div>
-                </div>
+                {% for channel in data.get_signals_info %}
+                    <div class="folders">
+                        {% if channel.channel_status == 'active' %}
+                            <div class="status-box" :style="background-color: green" ></div>
+                        {% elif channel.channel_status == 'disable' %}
+                            <div class="status-box" :style="background-color: red" ></div>
+                        {% elif channel.channel_status == 'test' %}
+                            <div class="status-box" :style="background-color: yellow" ></div>
+                        {% endif %}
+                        <div class="statistics"><h4>{{ channel.last_signal_delta }}</h4></div>
+                        <div class="statistics"><h4>{{ channel.folder_name }}</h4></div>
+                        <div class="statistics"><h4>{{ channel.channel_id }}</h4></div>
+                        <div class="statistics"><h4>{{ channel.channel_name }}</h4></div>
+                        <div class="statistics"><h4>{{ channel.signals_count }}</h4></div>
+                    </div>
+                {% endfor %}
                 
             </div>
             <div class="adminBox">
@@ -102,14 +111,16 @@
                         <h4>Папки и Кол. Каналлов</h4>
                         <h4>Состояние</h4>
                     </div>
-                    <div class="onOff">
-                        <h4>RF - 12</h4>
-                        <h4>Вкл</h4>
-                    </div>
-                    <div class="onOff">
-                        <h4>RP - 23</h4>
-                        <h4>Вык</h4>
-                    </div>
+                    {% for folder in data.get_folder_status_and_channels_count %}
+                        <div class="onOff">
+                            <h4>{{ folder.folder_name }} - {{ folder.channels_count }}</h4>
+                            {% if folder.folder_status == 'active' %}
+                                <h4>Вкл</h4>
+                            {% elif folder.folder_status == 'disable' %}
+                                <h4>Вык</h4>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

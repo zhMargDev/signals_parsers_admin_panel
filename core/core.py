@@ -76,3 +76,9 @@ async def get_channels_diagram(active, disable, test):
         "test": test_percent,
         "css_gradient": css_gradient
     }
+
+async def get_signals_info():
+    return await channels_and_folders.get_signals_info()
+    
+async def get_folder_status_and_channels_count():
+    return await channels_and_folders.get_folder_status_and_channels_count()

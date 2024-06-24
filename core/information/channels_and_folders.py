@@ -449,3 +449,102 @@ async def get_folders_channels_info(period=None, folder_name=None):
     conn.close()
 
     return result
+
+async def get_signals_info():
+    """
+        Получение данных для 2ой страницы
+    """
+    conn = sqlite3.connect('parser.db')
+    cursor = conn.cursor()
+
+    # ПОлучаем список папок
+
+    cursor.execute('SELECT * FROM folders')
+    folders = cursor.fetchall()
+
+    # Каналы
+
+    cursor.execute("SELECT * FROM channels")
+    channels = cursor.fetchall()
+
+    # Все сигналы
+
+    cursor.execute('''
+            SELECT * FROM signals
+            UNION ALL
+            SELECT * FROM testing_signals
+        ''')
+
+    # Получаем результаты
+    signals = cursor.fetchall()
+
+    result = []
+
+    now = datetime.datetime.now()
+
+    for channel in channels:
+        chan = {
+            "channel_id": channel[2],
+            "channel_name": channel[3],
+            "last_signal_delta": 'never',
+            "signals_count": 0,
+            "channel_status": channel[4],
+            "folder_name": 'None'
+        }
+        for folder in folders:
+            if channel[1] == folder[1]:
+                chan['folder_name'] = folder[2]
+                break
+        for signal in signals:
+            if signal[1] == channel[2]:
+                chan["signals_count"] += 1
+                # Преобразование даты и времени последнего сигнала
+                signal_time = datetime.datetime.strptime(signal[4] + ' ' + signal[5], '%Y-%m-%d %H:%M')
+                # Вычисление разницы времени
+                time_delta = now - signal_time
+                # Форматирование разницы времени в формат '2d 3h 20m'
+                days = time_delta.days
+                hours, remainder = divmod(time_delta.seconds, 3600)
+                minutes, _ = divmod(remainder, 60)
+                chan["last_signal_delta"] = f'{days}d {hours}h {minutes}m'
+        result.append(chan)
+
+
+    cursor.close()
+    conn.close()
+
+    return result
+
+async def get_folder_status_and_channels_count():
+    """
+        Получаем папки, статус папки и количество каналов в папках
+    """
+
+    conn = sqlite3.connect('parser.db')
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT * FROM folders')
+    folders = cursor.fetchall()
+
+    cursor.execute('SELECT * FROM channels')
+    channels = cursor.fetchall()
+
+    result = []
+
+    for folder in folders:
+        data = {
+            "folder_name": folder[2],
+            "channels_count": 0,
+            "folder_status": folder[3]
+        }
+
+        for channel in channels:
+            if channel[1] == folder[1]:
+                data["channels_count"] += 1
+
+        result.append(data)
+
+    cursor.close()
+    conn.close()
+
+    return result

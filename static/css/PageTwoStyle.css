@@ -80,9 +80,15 @@
 
 }
 .folders{
-display: grid;
-grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-border-bottom: 1px solid;
+    display: grid;
+    grid-template-columns: auto 1fr 1fr 1fr 1fr 1fr;
+    border-bottom: 1px solid;
+}
+.status-box{
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin: auto;
 }
 h4{ margin: 3px;
     white-space: nowrap;
