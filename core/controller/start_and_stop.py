@@ -41,6 +41,7 @@ async def start_stop_parser():
         return 'Problem with Datafile'
 # pizdeeeeeeeeeeeeeeeeeeeeec
     if data["parser"]["status"] == "stopped":
+        process = subprocess.Popen(['python3', 'signals_parser/run.py'])
         try:
             # Запуск процесса
             PARSER_PROCESS = await asyncio.create_subprocess_exec(
@@ -166,6 +167,7 @@ async def restart():
         else:
             print(f"Failed to find processes. Error: {stderr.decode()}")
        
+        process = subprocess.Popen(['python3', 'signals_parser/run.py'])
         try:
             # Запуск процесса
             PACKAGER_PROCESS = await asyncio.create_subprocess_exec(
@@ -182,6 +184,7 @@ async def restart():
         except:
             print('Mna')
         
+        process = subprocess.Popen(['python3', 'signals_packager/main.py'])
         try:
             # Запуск процесса
             PARSER_PROCESS = await asyncio.create_subprocess_exec(
@@ -239,6 +242,7 @@ async def start_stop_packager():
         return 'Problem with Datafile'
 # pizdeeeeeeeeeeeeeeeeeeeeec
     if data["packager"]["status"] == "stopped":
+        process = subprocess.Popen(['python3', 'signals_packager/main.py'])
         try:
             # Запуск процесса
             PACKAGER_PROCESS = await asyncio.create_subprocess_exec(
