@@ -16,8 +16,8 @@ async def get_signals_by_period(period):
 async def get_signals_info_by_period(period):
     return await channels_and_folders.get_signals_info_by_period(period)
 
-async def get_folders_channels_info(period):
-    return await channels_and_folders.get_folders_channels_info(period)
+async def get_folders_channels_info(period , folder_name):
+    return await channels_and_folders.get_folders_channels_info(period, folder_name)
 
 async def get_long_and_short_diagram(long_x, short):
     """

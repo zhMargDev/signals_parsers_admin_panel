@@ -1,44 +1,221 @@
-import os, subprocess, json, asyncio
-
+import os
+import subprocess
+import json
+import asyncio
 from datetime import datetime
 
 DATA_FILE = "data.json"
 PARSER_PROCESS = None
-PACKAGER_PROCESS = None
+PACKAGER_PROCESS= None
 
 async def load_data():
     """
-        Данная фукнция открывает файлдата в котором прописаны данные об парсере и расфасофщике
+    Асинхронная функция для загрузки данных из JSON файла.
     """
-    # Загрузка данных о парсере и упаковщике
     if os.path.exists(DATA_FILE):
         with open(DATA_FILE, "r") as file:
             return json.load(file)
-    # Инициализация структуры данных, если файл не существует
-    return {
-        "parser": {
-            "status": "stopped",
-            "last_changed": str(datetime.now())
-        },
-        "packager": {
-            "status": "stopped",
-            "last_changed": str(datetime.now())
+    else:
+        return {
+            "parser": {"status": "stopped", "last_changed": str(datetime.now())},
+            "packager": {"status": "stopped", "last_changed": str(datetime.now())},
         }
-    }
 
 async def save_data(data):
     """
-        Данная фукнция сохраняет изменения в про парсер и расфасофщик
+    Асинхронная функция для сохранения данных в JSON файл.
     """
     with open(DATA_FILE, "w") as file:
         json.dump(data, file, indent=4)
 
+async def start_stop_parser():
+    """
+        Данная фукнция запускает или останавливает парсер
+        Который собирает данные из каналов
+    """
+
+    global PARSER_PROCESS
+    data = await load_data()
+
+    if data is None:
+        return 'Problem with Datafile'
+# pizdeeeeeeeeeeeeeeeeeeeeec
+    if data["parser"]["status"] == "stopped":
+        try:
+            # Запуск процесса
+            PARSER_PROCESS = await asyncio.create_subprocess_exec(
+                "python3", "run.py",
+                cwd="signals_parser/",
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+            asyncio.create_task(monitor_process(PARSER_PROCESS, "Parser"))
+            
+            data["parser"]["status"] = "running"
+            data["parser"]["last_changed"] = str(datetime.now())
+                
+            await save_data(data)
+        except:
+            print('Mna')
+
+    else:
+        # Команда для поиска всех процессов, содержащих 'python'
+        find_process_cmd = "ps -ef | grep '[p]ython' | grep -v grep"
+        # Выполнение команды для поиска процессов
+        process = subprocess.Popen(find_process_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+
+        if process.returncode == 0:
+            # Извлечение PID процессов
+            for line in stdout.decode().split('\n'):
+                if line.strip():  # Проверка на пустую строку
+                    if '/root/projects/signals_parsers_admin_panel/.venv/bin/uvicorn main:app' in line or 'python3 signals_packager/main.py' in line:
+                        print("Skipping process: " + line)
+                        continue
+                    try:
+                        # PID процесса находится во втором столбце (разделение по пробелу)
+                        pid = int(line.split()[1])
+                        print(f"Found process with PID: {pid}")
+
+                        # Команда для завершения процесса
+                        kill_process_cmd = f"kill {pid}"
+                        kill_process = subprocess.Popen(kill_process_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                        kill_stdout, kill_stderr = kill_process.communicate()
+
+                        if kill_process.returncode == 0:
+                            print(f"Process with PID {pid} has been terminated.")
+                        else:
+                            print(f"Failed to terminate process with PID {pid}. Error: {kill_stderr.decode()}")
+                    except (IndexError, ValueError):
+                        print("Failed to parse PID from the process list.")
+        else: print(f"Failed to find processes. Error: {stderr.decode()}")
+        data["parser"]["status"] = "stopped"
+        data["parser"]["last_changed"] = ""
+
+
+    await save_data(data)
+    return data
+
+async def restart():
+    """
+    Функция для перезапуска процессов парсера и распаковщика.
+    """
+    global PARSER_PROCESS, PACKAGER_PROCESS
+    try:
+        data = await load_data()
+        # Выключение парсера
+        # Команда для поиска всех процессов, содержащих 'python'
+        find_process_cmd = "ps -ef | grep '[p]ython' | grep -v grep"
+        # Выполнение команды для поиска процессов
+        process = subprocess.Popen(find_process_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+
+        if process.returncode == 0:
+            # Извлечение PID процессов
+            for line in stdout.decode().split('\n'):
+                if line.strip():  # Проверка на пустую строку
+                    if '/root/projects/signals_parsers_admin_panel/.venv/bin/uvicorn main:app' in line or 'python3 signals_packager/main.py' in line:
+                        print("Skipping process: " + line)
+                        continue
+                    try:
+                        # PID процесса находится во втором столбце (разделение по пробелу)
+                        pid = int(line.split()[1])
+                        print(f"Found process with PID: {pid}")
+
+                        # Команда для завершения процесса
+                        kill_process_cmd = f"kill {pid}"
+                        kill_process = subprocess.Popen(kill_process_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                        kill_stdout, kill_stderr = kill_process.communicate()
+
+                        if kill_process.returncode == 0:
+                            print(f"Process with PID {pid} has been terminated.")
+                        else:
+                            print(f"Failed to terminate process with PID {pid}. Error: {kill_stderr.decode()}")
+                    except (IndexError, ValueError):
+                        print("Failed to parse PID from the process list.")
+        else: print(f"Failed to find processes. Error: {stderr.decode()}")
+        
+        # Выключение расфасофщика
+        # Команда для поиска всех процессов, содержащих 'python'
+        find_process_cmd = "ps -ef | grep '[p]ython' | grep -v grep"
+        # Выполнение команды для поиска процессов
+        process = subprocess.Popen(find_process_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+
+        if process.returncode == 0:
+            # Извлечение PID процессов
+            for line in stdout.decode().split('\n'):
+                if line.strip():  # Проверка на пустую строку
+                    if 'python3 signals_packager/main.py' in line:
+                        try:
+                            # PID процесса находится во втором столбце (разделение по пробелу)
+                            pid = int(line.split()[1])
+                            print(f"Found process with PID: {pid}")
+
+                            # Команда для завершения процесса
+                            kill_process_cmd = f"kill {pid}"
+                            kill_process = subprocess.Popen(kill_process_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                            kill_stdout, kill_stderr = kill_process.communicate()
+
+                            if kill_process.returncode == 0:
+                                print(f"Process with PID {pid} has been terminated.")
+                            else:
+                                print(f"Failed to terminate process with PID {pid}. Error: {kill_stderr.decode()}")
+                        except (IndexError, ValueError):
+                            print("Failed to parse PID from the process list.")
+        else:
+            print(f"Failed to find processes. Error: {stderr.decode()}")
+       
+        try:
+            # Запуск процесса
+            PACKAGER_PROCESS = await asyncio.create_subprocess_exec(
+                "python3", "main.py",
+                cwd="signals_packager/",
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+           
+            asyncio.create_task(monitor_process(PACKAGER_PROCESS, "packager"))
+        
+            data["packager"]["status"] = "running"
+            data["packager"]["last_changed"] = str(datetime.now())
+        except:
+            print('Mna')
+        
+        try:
+            # Запуск процесса
+            PARSER_PROCESS = await asyncio.create_subprocess_exec(
+                "python3", "run.py",
+                cwd="signals_parser/",
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+            asyncio.create_task(monitor_process(PARSER_PROCESS, "Parser"))
+            
+            data["parser"]["status"] = "running"
+            data["parser"]["last_changed"] = str(datetime.now())
+                
+            await save_data(data)
+        except:
+            print('Mna')
+            
+        data["parser"]["status"] = "running"
+        data["parser"]["last_changed"] = str(datetime.now())
+        data["packager"]["status"] = "running"
+        data["packager"]["last_changed"] = str(datetime.now())
+
+        await save_data(data)
+        return data
+
+    except Exception as e:
+        print(f"Ошибка в функции restart: {e}")
+        return f"Ошибка в функции restart: {e}"
+
 async def monitor_process(process, name):
     """
-        Данная функция добавляет лог файл если его нет и выводит туда все данные 
-        которые должны выводиться в терминал
+    Функция для мониторинга вывода процесса и записи его в файл логов.
     """
-    log_dir = "/root/projects/signals_parsers_admin_panel/logs/"
+    log_dir = "/logs/"
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
 
@@ -52,117 +229,82 @@ async def monitor_process(process, name):
             else:
                 break
 
-async def start_stop_parser():
-    """
-        Данная фукнция запускает или останавливает парсер
-        Который собирает данные из каналов
-    """
-    global PARSER_PROCESS
-    data = await load_data()
 
-    if data is None:
-        return 'Problem with Datafile'
-
-    if data["parser"]["status"] == "stopped":
-        # Запуск процесса
-        PARSER_PROCESS = await asyncio.create_subprocess_exec(
-            "python3", "run.py",
-            cwd="/root/projects/signals_parser",
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE
-        )
-        asyncio.create_task(monitor_process(PARSER_PROCESS, "Parser"))
-        data["parser"]["status"] = "running"
-        data["parser"]["last_changed"] = str(datetime.now())
-    else:
-        # Остановка процесса
-        if PARSER_PROCESS:
-            PARSER_PROCESS.terminate()
-            await PARSER_PROCESS.wait()
-            PARSER_PROCESS = None
-        data["parser"]["status"] = "stopped"
-        data["parser"]["last_changed"] = str(datetime.now())
-
-    await save_data(data)
-    return data
 
 async def start_stop_packager():
-    """
-        Данная фукнция запускает или останавливает расфасовщик
-        Который отправляет данные в каналы по группам
-    """
+    """Данная фукнция запускает или останавливает парсер Который собирает данные из каналов"""
     global PACKAGER_PROCESS
     data = await load_data()
-
     if data is None:
         return 'Problem with Datafile'
-
+# pizdeeeeeeeeeeeeeeeeeeeeec
     if data["packager"]["status"] == "stopped":
-        # Запуск процесса
-        PACKAGER_PROCESS = await asyncio.create_subprocess_exec(
-            "python3", "main.py",
-            cwd="/root/projects/signals_packager",
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE
-        )
-        asyncio.create_task(monitor_process(PACKAGER_PROCESS, "Packager"))
-        data["packager"]["status"] = "running"
-        data["packager"]["last_changed"] = str(datetime.now())
+        try:
+            # Запуск процесса
+            PACKAGER_PROCESS = await asyncio.create_subprocess_exec(
+                "python3", "main.py",
+                cwd="signals_packager/",
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+           
+            asyncio.create_task(monitor_process(PACKAGER_PROCESS, "packager"))
+        
+            data["packager"]["status"] = "running"
+            data["packager"]["last_changed"] = str(datetime.now())
+        except:
+            print('Mna')
+
     else:
-        # Остановка процесса
-        if PACKAGER_PROCESS:
-            PACKAGER_PROCESS.terminate()
-            await PACKAGER_PROCESS.wait()
-            PACKAGER_PROCESS = None
+
+        # Команда для поиска всех процессов, содержащих 'python'
+        find_process_cmd = "ps -ef | grep '[p]ython' | grep -v grep"
+        # Выполнение команды для поиска процессов
+        process = subprocess.Popen(find_process_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+
+        if process.returncode == 0:
+            # Извлечение PID процессов
+            for line in stdout.decode().split('\n'):
+                if line.strip():  # Проверка на пустую строку
+                    if 'python3 signals_packager/main.py' in line:
+                        try:
+                            # PID процесса находится во втором столбце (разделение по пробелу)
+                            pid = int(line.split()[1])
+                            print(f"Found process with PID: {pid}")
+
+                            # Команда для завершения процесса
+                            kill_process_cmd = f"kill {pid}"
+                            kill_process = subprocess.Popen(kill_process_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                            kill_stdout, kill_stderr = kill_process.communicate()
+
+                            if kill_process.returncode == 0:
+                                print(f"Process with PID {pid} has been terminated.")
+                            else:
+                                print(f"Failed to terminate process with PID {pid}. Error: {kill_stderr.decode()}")
+                        except (IndexError, ValueError):
+                            print("Failed to parse PID from the process list.")
+        else:
+            print(f"Failed to find processes. Error: {stderr.decode()}")
+       
         data["packager"]["status"] = "stopped"
         data["packager"]["last_changed"] = str(datetime.now())
-
     await save_data(data)
     return data
 
-async def restart():
-    """
-        Данная фукнция перезапускает парсер
-        Который собирает данные из каналов
-        И расфасовщик
-        Который отправляет данные в каналы по группам
-    """
-    global PACKAGER_PROCESS
-    global PARSER_PROCESS
-    data = await load_data()
 
-    if data is None:
-        return 'Problem with Datafile'
 
-    # Рестарт бота расфасофщика
-    if PACKAGER_PROCESS:
-        PACKAGER_PROCESS.terminate()
-        await PACKAGER_PROCESS.wait()
-        PACKAGER_PROCESS = None
-    PACKAGER_PROCESS = await asyncio.create_subprocess_exec(
-        "python3", "main.py",
-        cwd="/root/projects/signals_packager",
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE
-    )
-    asyncio.create_task(monitor_process(PACKAGER_PROCESS, "Packager"))
-    data["packager"]["status"] = "stopped"
-    data["packager"]["last_changed"] = str(datetime.now())
 
-    # Рестарт парсера
-    if PARSER_PROCESS:
-        PARSER_PROCESS.terminate()
-        await PARSER_PROCESS.wait()
-        PARSER_PROCESS = None
-    PARSER_PROCESS = await asyncio.create_subprocess_exec(
-        "python3", "run.py",
-        cwd="/root/projects/signals_parser",
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE
-    )
-    asyncio.create_task(monitor_process(PARSER_PROCESS, "Parser"))
-    data["parser"]["status"] = "running"
-    data["parser"]["last_changed"] = str(datetime.now())
 
-    await save_data(data)
-    return data
+
+    
+async def main():
+    await start_stop_parser()
+    await start_stop_packager()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
+
+
+

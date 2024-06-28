@@ -1,5 +1,4 @@
 fastapi
-db-sqlite3
 Jinja2
 uvicorn
-psutil
+psycopg2-binary

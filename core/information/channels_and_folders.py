@@ -1,10 +1,16 @@
-import sqlite3
+import psycopg2
 
 from datetime import datetime, timedelta
 from collections import defaultdict
 
 async def get_channels_info():
-    conn = sqlite3.connect('parser.db')
+    conn = psycopg2.connect(
+                host='127.0.0.1',
+                port="5432",
+                database='signals_parser',
+                user='parser',
+                password='parser'
+            )
     cursor = conn.cursor()
 
     # Получение всех папок
@@ -88,15 +94,24 @@ async def get_signals_by_period(period):
     if start_date:
         start_date_str = start_date.strftime('%Y-%m-%d %H:%M:%S')
 
-    conn = sqlite3.connect('parser.db')
+    conn = psycopg2.connect(
+                host='127.0.0.1',
+                port="5432",
+                database='signals_parser',
+                user='parser',
+                password='parser'
+            )
     cursor = conn.cursor()
 
     # Формируем SQL-запрос в зависимости от периода для получения всех сигналов
     if start_date:
-        cursor.execute('''
-            SELECT * FROM signals 
-            WHERE datetime(date || ' ' || time) >= ?
-        ''', (start_date_str,))
+        start_date_str = start_date.strftime('%Y-%m-%d %H:%M:%S')
+        cursor.execute(f'''
+            SELECT *
+            FROM signals
+            WHERE (date || ' ' || time)::timestamp >= '{start_date_str}'::timestamp
+            ''')
+      
     else:
         cursor.execute('SELECT * FROM signals')
 
@@ -105,10 +120,10 @@ async def get_signals_by_period(period):
 
     # Формируем SQL-запрос в зависимости от периода для получения всех тестовых сигналов
     if start_date:
-        cursor.execute('''
+        cursor.execute(f'''
             SELECT * FROM testing_signals 
-            WHERE datetime(date || ' ' || time) >= ?
-        ''', (start_date_str,))
+          WHERE (date || ' ' || time)::timestamp >= '{start_date_str}'::timestamp
+            ''')
     else:
         cursor.execute('SELECT * FROM testing_signals')
 
@@ -209,17 +224,23 @@ async def get_signals_info_by_period(period):
     if start_date:
         start_date_str = start_date.strftime('%Y-%m-%d %H:%M:%S')
 
-    conn = sqlite3.connect('parser.db')
+    conn = psycopg2.connect(
+                host='127.0.0.1',
+                port="5432",
+                database='signals_parser',
+                user='parser',
+                password='parser'
+            )
     cursor = conn.cursor()
 
     # Формируем SQL-запрос в зависимости от периода для получения всех сигналов из двух таблиц
     if start_date:
-        query = '''
+        query = f'''
             SELECT * FROM signals 
-            WHERE datetime(date || ' ' || time) >= ?
+            WHERE (date || ' ' || time)::timestamp >= '{start_date_str}'::timestamp
             UNION ALL
             SELECT * FROM testing_signals 
-            WHERE datetime(date || ' ' || time) >= ?
+            WHERE (date || ' ' || time)::timestamp >= '{start_date_str}'::timestamp
         '''
         params = (start_date_str, start_date_str)
     else:
@@ -234,7 +255,6 @@ async def get_signals_info_by_period(period):
 
     # Получаем результаты
     signals = cursor.fetchall()
-
     channels_count = []
     # Определение каналов
     for signal in signals:
@@ -264,10 +284,11 @@ async def get_signals_info_by_period(period):
 
     # Добавляем количество сигналов для каждой папки
     for folder in folders_counts:
-        for channel_id in signals_count:
-            for channel in channels:
-                if channel[2] == channel_id and folder['folder_id'] == channel[1]:
-                    folder["signals_count"] += 1
+        for channel in channels:
+            if channel[1] == folder['folder_id']:
+                for signal in signals:
+                    if channel[2] == signal[1]:
+                        folder["signals_count"] += 1
 
     # Удаляем папки у которых количество сигналов равен нулю
     flag_folders_counts = []
@@ -357,24 +378,30 @@ async def get_folders_channels_info(period=None, folder_name=None):
     if start_date:
         start_date_str = start_date.strftime('%Y-%m-%d %H:%M:%S')
 
-    conn = sqlite3.connect('parser.db')
+    conn = psycopg2.connect(
+                host='127.0.0.1',
+                port="5432",
+                database='signals_parser',
+                user='parser',
+                password='parser'
+            )
     cursor = conn.cursor()
 
     # Получаем папки и каналы
-    cursor.execute('SELECT folder_id, folder_title FROM folders')
+    cursor.execute('SELECT * FROM folders')
     folders = cursor.fetchall()
 
-    cursor.execute('SELECT channel_id, folder_id, channel_name FROM channels')
+    cursor.execute('SELECT * FROM channels')
     channels = cursor.fetchall()
 
     # Формируем SQL-запрос в зависимости от периода для получения всех сигналов из двух таблиц
     if start_date:
-        query = '''
+        query = f'''
             SELECT * FROM signals 
-            WHERE datetime(date || ' ' || time) >= ?
+            WHERE (date || ' ' || time)::timestamp >= '{start_date_str}'::timestamp
             UNION ALL
             SELECT * FROM testing_signals 
-            WHERE datetime(date || ' ' || time) >= ?
+            WHERE (date || ' ' || time)::timestamp >= '{start_date_str}'::timestamp
         '''
         params = (start_date_str, start_date_str)
     else:
@@ -433,7 +460,7 @@ async def get_folders_channels_info(period=None, folder_name=None):
                                 signal_is_appended = True
                                 break
                         if not signal_is_appended:
-                            res_channel.append({
+                            res_channel['signals'].append({
                                 "coin": signal[6],
                                 "trend": signal[7],
                                 "count": 1,
@@ -441,7 +468,7 @@ async def get_folders_channels_info(period=None, folder_name=None):
                                 "time": signal[5],
                             })
                         
-            res["channels"].append(res_channel)
+                res["channels"].append(res_channel)
 
         result.append(res)
 
@@ -454,7 +481,13 @@ async def get_signals_info():
     """
         Получение данных для 2ой страницы
     """
-    conn = sqlite3.connect('parser.db')
+    conn = psycopg2.connect(
+                host='127.0.0.1',
+                port="5432",
+                database='signals_parser',
+                user='parser',
+                password='parser'
+            )
     cursor = conn.cursor()
 
     # ПОлучаем список папок
@@ -480,7 +513,7 @@ async def get_signals_info():
 
     result = []
 
-    now = datetime.datetime.now()
+    now = datetime.now()
 
     for channel in channels:
         chan = {
@@ -520,7 +553,13 @@ async def get_folder_status_and_channels_count():
         Получаем папки, статус папки и количество каналов в папках
     """
 
-    conn = sqlite3.connect('parser.db')
+    conn = psycopg2.connect(
+                host='127.0.0.1',
+                port="5432",
+                database='signals_parser',
+                user='parser',
+                password='parser'
+            )
     cursor = conn.cursor()
 
     cursor.execute('SELECT * FROM folders')
