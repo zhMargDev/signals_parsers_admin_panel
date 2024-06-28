@@ -13,7 +13,6 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-
 # Определяем маршрут для каждой страницы
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request, period: str = Query(None), folder_name: str = Query(None)):
